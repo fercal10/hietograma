@@ -1,0 +1,123 @@
+{
+  "zones": [
+    {
+      "name": "Region I",
+      "heightMin": 0,
+      "heightMax": 1200,
+      "curves": [
+        {
+          "name": "Sector I",
+          "heightMin": 0,
+          "heightMax": 500,
+          "curveEquations": [
+
+            {
+              "period": 2,
+              "mult": 379.14,
+              "power": -0.476
+            },
+            {
+              "period": 5,
+              "mult": 498.47,
+              "power": -0.423
+            },
+            {
+              "period": 10,
+              "mult": 564.57,
+              "power": -0.379
+            },
+            {
+              "period": 25,
+              "mult": 682.83,
+              "power": -0.37
+            }
+          ]
+        },
+        {
+          "name": "Sector II",
+          "heightMin": 500,
+          "heightMax": 1000,
+          "curveEquations": [
+
+            {
+              "period": 2,
+              "mult": 511.36,
+              "power": -0.336
+            },
+            {
+              "period": 5,
+              "mult": 583.24,
+              "power": -0.325
+            },
+            {
+              "period": 10,
+              "mult": 651.32,
+              "power": -0.334
+            },
+            {
+              "period": 25,
+              "mult": 715.23,
+              "power": -0.331
+            }
+          ]
+        },
+        {
+          "name": "Sector III",
+          "heightMin": 1000,
+          "heightMax": 1500,
+          "curveEquations": [
+
+            {
+              "period": 2,
+              "mult": 501.06,
+              "power": -0.442
+            },
+            {
+              "period": 5,
+              "mult": 566.81,
+              "power": -0.37
+            },
+            {
+              "period": 10,
+              "mult": 619.67,
+              "power": -0.342
+            },
+            {
+              "period": 25,
+              "mult": 718.64,
+              "power": -0.344
+            }
+          ]
+        },
+        {
+          "name": "Sector IV",
+          "heightMin": 1500,
+          "heightMax": 2000,
+          "curveEquations": [
+
+            {
+              "period": 2,
+              "mult": 509.48,
+              "power": -0.446
+            },
+            {
+              "period": 5,
+              "mult": 618.63,
+              "power": -0.412
+            },
+            {
+              "period": 10,
+              "mult": 699.04,
+              "power": -0.421
+            },
+            {
+              "period": 25,
+              "mult": 803.13,
+              "power": -0.425
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
