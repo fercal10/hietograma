@@ -1,8 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
 
-import '../util/sharedFunctions.dart';
 
 class HistogramPlots extends StatelessWidget {
   final List<double> data;
@@ -18,8 +16,8 @@ class HistogramPlots extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    double maxData= data.reduce((a, b) => a>b?a:b)* 1.2;
-    List<double> listInY= List<double>.generate(10, (index) => (maxData*(index/10)).toPrecision(0) ) ;
+    double maxData = data.reduce((a, b) => a > b ? a : b) * 1.2;
+
     List<double> dataFix = [];
     switch (type) {
       case (1):
@@ -30,7 +28,7 @@ class HistogramPlots extends StatelessWidget {
         break;
       case (3):
         var axiList = [...data];
-      for(var i=0;i < data.length;i++) {
+        for (var i = 0; i < data.length; i++) {
           double maximo = axiList.first;
           for (int j = 1; j < axiList.length; j++) {
             if (axiList[j] > maximo) maximo = axiList[j];
@@ -60,23 +58,27 @@ class HistogramPlots extends StatelessWidget {
             minY: 0,
             maxY: maxData,
             barTouchData: BarTouchData(
-                touchTooltipData: BarTouchTooltipData(
-                    tooltipBgColor: Colors.transparent,
+              touchTooltipData: BarTouchTooltipData(
+                fitInsideVertically: true,
+                  tooltipBgColor: Colors.transparent,
                   tooltipPadding: EdgeInsets.zero,
                   tooltipMargin: 2,
-                  fitInsideVertically: true,
-
-                  getTooltipItem:(BarChartGroupData group, int groupIndex, BarChartRodData rod, int rodIndex){
-                  return BarTooltipItem(rod.toY.toString(), const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: Colors.black
-                  ));
-                  }
-                ),
-          ),
-            gridData:  FlGridData(drawVerticalLine: false,horizontalInterval: maxData/6,),
+                  getTooltipItem: (BarChartGroupData group, int groupIndex,
+                      BarChartRodData rod, int rodIndex) {
+                    return BarTooltipItem(
+                        rod.toY.toString(),
+                        const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 10,
+                            color: Colors.black));
+                  }),
+            ),
+            gridData: FlGridData(
+              drawVerticalLine: false,
+              horizontalInterval: maxData / 6,
+            ),
             borderData: FlBorderData(
-                border:const  Border(
+                border: const Border(
                     left: BorderSide(),
                     bottom: BorderSide(),
                     right: BorderSide.none,
@@ -87,18 +89,17 @@ class HistogramPlots extends StatelessWidget {
               ),
             ),
             barGroups: [
-              ...durations
-                  .asMap()
-                  .entries
-                  .map((e) => BarChartGroupData(x: e.value, barRods: [
-                        BarChartRodData(
+              ...durations.asMap().entries.map((e) => BarChartGroupData(
+                    x: e.value,
+                    barRods: [
+                      BarChartRodData(
                           toY: dataFix[e.key],
                           borderRadius: BorderRadius.zero,
-                          width: 28,
-                        )
-                      ],
-                showingTooltipIndicators: [0],
-              )),
+                          width: 200 / durations.length
+                      )
+                    ],
+
+                  )),
             ],
           ),
         ),

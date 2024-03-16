@@ -26,14 +26,13 @@ class HyetographDetailsScreen extends StatelessWidget {
       List<int> durations = hyetograph.getDurations();
       List<double> data = hyetograph.getData();
 
-      final curveEquations =hyetograph.getCurveEquations();
       final indexSector = hyetograph.getIndexSector();
 
 
 
 
       List<DataRow> tableRows = <DataRow>[DataRow(cells: [
-        DataCell(Text( "${hyetograph.returnPeriod.toString()} Años")),
+        DataCell(Text( "${hyetograph.returnPeriod.toString()} Minutos")),
           ...data.map((e) => DataCell(Text(e.toStringAsFixed(2))))
         ],)
       ];

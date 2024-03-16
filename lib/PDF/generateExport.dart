@@ -62,14 +62,16 @@ Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph 
     grid: pw.CartesianGrid(
       xAxis: pw.FixedAxis.fromStrings(
         List<String>.generate(
-            datos.length, (index) =>"${duration[index]} min"),
+            datos.length, (index) =>"${duration[index]}"),
         marginStart: 30,
         marginEnd: 30,
+        textStyle: const pw.TextStyle( fontSize: 10),
         ticks: true,
       ),
       yAxis: pw.FixedAxis(
         listInY,
         format: (v) => '$v mm',
+        textStyle: const pw.TextStyle( fontSize: 10),
         divisions: true,
       ),
     ),
@@ -126,6 +128,7 @@ Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph 
   document.addPage(
     pw.Page(
       pageFormat: pageFormat,
+      margin: const pw.EdgeInsets.all(15),
       theme: theme,
       build: (context) {
         // Page layout

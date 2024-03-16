@@ -27,6 +27,8 @@ class Hyetograph extends HiveObject{
   int returnPeriod;
   @HiveField(7)
   Zone zone;
+  @HiveField(8)
+  String sectorName;
 
   Hyetograph({
     required this.name,
@@ -35,12 +37,11 @@ class Hyetograph extends HiveObject{
     required this.totalRainDuration,
     required this.returnPeriod,
     required this.zone,
+    required this.sectorName,
 });
 
   int getIndexSector() {
-    return zone.curves.indexWhere((curve) =>
-    curve.heightMin <= altitude &&
-      curve.heightMax > altitude);
+    return zone.curves.indexWhere((curve)=>curve.name==sectorName);
   }
 
   List<double> getData(){

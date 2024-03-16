@@ -1,12 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:geobase/geobase.dart';
 import 'package:get/get.dart';
 import 'package:hietograma/controllers/hyetographController.dart';
 import 'package:hietograma/controllers/zoneController.dart';
-
 import '../models/hyetograph.dart';
 import '../models/zone.dart';
+import 'package:location/location.dart';
 
 class AddHyetographScreen extends StatefulWidget {
   const AddHyetographScreen({super.key});
@@ -31,18 +30,22 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
   int returnPeriodSelect = returnPeriodOptions[0];
 
   Zone? zonesSelect;
+  String? sectorName;
 
   void _onSave() {
     print(zoneController.zones);
 
-    if (_formKey.currentState!.validate() && zonesSelect != null) {
+    if (_formKey.currentState!.validate() &&
+        zonesSelect != null &&
+        sectorName != null) {
       Hyetograph newHyetograph = Hyetograph(
           name: nameController.text.trim(),
           altitude: int.parse(altitudeController.text.trim()),
           baseTime: int.parse(baseTimeController.text.trim()),
           totalRainDuration: int.parse(totalRainDurationController.text.trim()),
           returnPeriod: returnPeriodSelect,
-          zone: zonesSelect as Zone);
+          zone: zonesSelect!,
+          sectorName: sectorName!);
       hyetographController.saveHyetograph(newHyetograph);
       Get.back();
     }
@@ -61,20 +64,14 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Zone> zonesOptions = zoneController.zones ?? [];
+    final List<Zone> zonesOptions = zoneController.zones ;
     if (zonesOptions.isEmpty) {
       Get.back();
       return const Scaffold();
-    };
+    }
 
-    print(zonesOptions[0].coordinates);
-    List<Geographic> listPosition = zonesOptions[0]
-        .coordinates
-        .map((x) => Geographic(lat: x[1], lon: x[0], ))
-        .toList();
-    Polygon newPolygon = Polygon.from([listPosition]);
-    GeoBox geoBox = GeoBox.from(listPosition);
-    print( geoBox.intersectsPoint(Geographic(lat: 8.62,lon: -70.27)));
+
+
     // geoBox.intersectsPoint(point)
 
     // print(newPolygon.);
@@ -93,6 +90,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
         child: Form(
           key: _formKey,
           child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               TextFormField(
                 keyboardType: TextInputType.text,
@@ -114,27 +112,105 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
               const SizedBox(
                 height: 30,
               ),
-              DropdownButton<Zone>(
-                isExpanded: true,
+              const Text("Regiones",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Padding(
                 padding: const EdgeInsets.fromLTRB(40, 0, 10, 0),
-                icon: const Icon(Icons.park),
-                onChanged: (Zone? newValue) {
-                  if (newValue != null) {
-                    setState(() {
-                      zonesSelect = newValue;
-                    });
-                  }
-                },
-                value: zonesSelect,
-                items: zonesOptions
-                    .map((e) =>
-                        DropdownMenuItem<Zone>(value: e, child: Text(e.name)))
-                    .toList(),
+                child: Row(
+                  children: [
+                    Expanded(
+                      flex: 5,
+                      child: DropdownButton<Zone>(
+                        isExpanded: true,
+                        onChanged: (Zone? newValue) {
+                          if (newValue != null) {
+                            setState(() {
+                              zonesSelect = newValue;
+                            });
+                          }
+                        },
+                        value: zonesSelect,
+                        items: zonesOptions
+                            .map((e) => DropdownMenuItem<Zone>(
+                                value: e, child: Text(e.name)))
+                            .toList(),
+                      ),
+                    ),
+                    Expanded(
+                        flex: 1,
+                        child: IconButton(
+                            onPressed: () async {
+                              Location location = new Location();
+
+                              bool _serviceEnabled;
+                              PermissionStatus _permissionGranted;
+                              LocationData _locationData;
+
+                              _serviceEnabled = await location.serviceEnabled();
+                              if (!_serviceEnabled) {
+                                _serviceEnabled =
+                                    await location.requestService();
+                                if (!_serviceEnabled) {
+                                  return;
+                                }
+                              }
+
+                              _permissionGranted =
+                                  await location.hasPermission();
+                              if (_permissionGranted ==
+                                  PermissionStatus.denied) {
+                                _permissionGranted =
+                                    await location.requestPermission();
+                                if (_permissionGranted !=
+                                    PermissionStatus.granted) {
+                                  return;
+                                }
+                              }
+
+                              _locationData = await location.getLocation();
+                              print(_locationData);
+                            },
+                            icon: const Icon(
+                              Icons.location_searching,
+                              color: Colors.black,
+                            )))
+                  ],
+                ),
+              ),
+              const SizedBox(
+                height: 20,
+              ),
+              const Text("Sectores",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              Padding(
+                padding: const EdgeInsets.fromLTRB(40, 0, 10, 0),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  borderRadius: const BorderRadius.all(Radius.circular(5)),
+                  // icon: const Icon(Icons.),
+                  onChanged: (String? newValue) {
+                    if (newValue != null) {
+                      setState(() {
+                        sectorName = newValue;
+                      });
+                    }
+                  },
+                  value: sectorName,
+                  items: zonesSelect != null
+                      ? zonesSelect!.curves
+                          .map((e) => DropdownMenuItem<String>(
+                              value: e.name,
+                              child: Text(
+                                  "${e.name} ${e.heightMin}m${e.heightMax != -1 ? ' - ${e.heightMax}m' : ''}")))
+                          .toList()
+                      : [],
+                ),
               ),
               const SizedBox(
                 height: 30,
               ),
               TextFormField(
+                maxLength: 4,
                 keyboardType: TextInputType.number,
                 controller: altitudeController,
                 decoration: const InputDecoration(
@@ -154,8 +230,17 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                   }
                   if (int.parse(value) < zonesSelect!.heightMin) {
                     return "La Altura minima de la Curva IDF es ${zonesSelect!.heightMin}";
-                  } else if (int.parse(value) > zonesSelect!.heightMax) {
+                  } else if (int.parse(value) >= zonesSelect!.heightMax &&
+                      zonesSelect!.heightMax != -1) {
                     return "La Altura maxima de la Curva IDF es ${zonesSelect!.heightMax}";
+                  }
+                  if(sectorName!= null){
+                    var validateSector =zonesSelect!.curves.firstWhere((e) =>e.name== sectorName );
+
+                    if(int.parse(value) < validateSector.heightMin ||int.parse(value) >= validateSector.heightMax){
+                      return "La altitud no coincide con el sector";
+                    }
+
                   }
                   return null;
                 },
@@ -180,6 +265,11 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                 validator: (value) {
                   if (value == null || value.isEmpty) {
                     return " Tiempo Base requerido ";
+                  }
+                  if (totalRainDurationController.text.isNotEmpty &&
+                      int.parse(value) / 2 >
+                          int.parse(totalRainDurationController.text)) {
+                    return " Tiempo Base Deber ser menor que el tiempo total de lluvia  ";
                   }
                   return null;
                 },

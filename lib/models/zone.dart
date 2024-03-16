@@ -1,4 +1,3 @@
-import 'package:geobase/geobase.dart';
 import 'package:hietograma/models/curveIDF.dart';
 import 'package:hive/hive.dart';
 

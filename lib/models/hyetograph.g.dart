@@ -23,6 +23,7 @@ class HyetographAdapter extends TypeAdapter<Hyetograph> {
       totalRainDuration: fields[5] as int,
       returnPeriod: fields[6] as int,
       zone: fields[7] as Zone,
+      sectorName: fields[8] as String,
     )
       ..id = fields[0] as int
       ..create = fields[2] as DateTime;
@@ -31,7 +32,7 @@ class HyetographAdapter extends TypeAdapter<Hyetograph> {
   @override
   void write(BinaryWriter writer, Hyetograph obj) {
     writer
-      ..writeByte(8)
+      ..writeByte(9)
       ..writeByte(0)
       ..write(obj.id)
       ..writeByte(1)
@@ -47,7 +48,9 @@ class HyetographAdapter extends TypeAdapter<Hyetograph> {
       ..writeByte(6)
       ..write(obj.returnPeriod)
       ..writeByte(7)
-      ..write(obj.zone);
+      ..write(obj.zone)
+      ..writeByte(8)
+      ..write(obj.sectorName);
   }
 
   @override
