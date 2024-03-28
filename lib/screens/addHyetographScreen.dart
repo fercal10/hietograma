@@ -33,7 +33,6 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
   String? sectorName;
 
   void _onSave() {
-    print(zoneController.zones);
 
     if (_formKey.currentState!.validate() &&
         zonesSelect != null &&
@@ -72,11 +71,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
 
 
 
-    // geoBox.intersectsPoint(point)
 
-    // print(newPolygon.);
-
-    zonesSelect = zonesOptions[0];
     return Scaffold(
       appBar: AppBar(
         elevation: 10,
@@ -124,8 +119,8 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                         isExpanded: true,
                         onChanged: (Zone? newValue) {
                           if (newValue != null) {
-                            setState(() {
                               zonesSelect = newValue;
+                            setState(() {
                             });
                           }
                         },
@@ -140,35 +135,35 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                         flex: 1,
                         child: IconButton(
                             onPressed: () async {
-                              Location location = new Location();
+                              Location location = Location();
 
-                              bool _serviceEnabled;
-                              PermissionStatus _permissionGranted;
-                              LocationData _locationData;
+                              bool serviceEnabled;
+                              PermissionStatus permissionGranted;
+                              LocationData locationData;
 
-                              _serviceEnabled = await location.serviceEnabled();
-                              if (!_serviceEnabled) {
-                                _serviceEnabled =
+                              serviceEnabled = await location.serviceEnabled();
+                              if (!serviceEnabled) {
+                                serviceEnabled =
                                     await location.requestService();
-                                if (!_serviceEnabled) {
+                                if (!serviceEnabled) {
                                   return;
                                 }
                               }
 
-                              _permissionGranted =
+                              permissionGranted =
                                   await location.hasPermission();
-                              if (_permissionGranted ==
+                              if (permissionGranted ==
                                   PermissionStatus.denied) {
-                                _permissionGranted =
+                                permissionGranted =
                                     await location.requestPermission();
-                                if (_permissionGranted !=
+                                if (permissionGranted !=
                                     PermissionStatus.granted) {
                                   return;
                                 }
                               }
 
-                              _locationData = await location.getLocation();
-                              print(_locationData);
+                              locationData = await location.getLocation();
+
                             },
                             icon: const Icon(
                               Icons.location_searching,

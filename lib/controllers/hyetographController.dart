@@ -13,10 +13,7 @@ class HyetographController extends GetxController{
     super.onInit();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+
 
   Future<void> _getHyetograph() async {
     _hyetographBox = await Hive.openBox<Hyetograph>('hyetograph');

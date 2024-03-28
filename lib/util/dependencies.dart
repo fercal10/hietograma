@@ -13,10 +13,10 @@ import '../models/zone.dart';
 Future<void> init()async{
   await Hive.initFlutter();
 
-  Hive.registerAdapter(HyetographAdapter());
-  Hive.registerAdapter(ZoneAdapter());
-  Hive.registerAdapter(CurveIDFAdapter());
   Hive.registerAdapter(CurveEquationAdapter());
+  Hive.registerAdapter(CurveIDFAdapter());
+  Hive.registerAdapter(ZoneAdapter());
+  Hive.registerAdapter(HyetographAdapter());
 
   Get.lazyPut(()=>ZoneController());
   Get.lazyPut(()=>HyetographController());

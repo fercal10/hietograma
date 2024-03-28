@@ -2,33 +2,40 @@ import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
 
-class HistogramPlots extends StatelessWidget {
+class HistogramPlots extends StatefulWidget {
   final List<double> data;
 
   final List<int> durations;
   final int type;
+  final void Function(double n) showRain;
 
   const HistogramPlots(
       {super.key,
+      required this.showRain,
       required this.data,
       required this.durations,
       required this.type});
 
   @override
+  State<HistogramPlots> createState() => _HistogramPlotsState();
+}
+
+class _HistogramPlotsState extends State<HistogramPlots> {
+  @override
   Widget build(BuildContext context) {
-    double maxData = data.reduce((a, b) => a > b ? a : b) * 1.2;
+    double maxData = widget.data.reduce((a, b) => a > b ? a : b) * 1.2;
 
     List<double> dataFix = [];
-    switch (type) {
+    switch (widget.type) {
       case (1):
-        dataFix = data;
+        dataFix = widget.data;
         break;
       case (2):
-        dataFix = data.reversed.toList();
+        dataFix = widget.data.reversed.toList();
         break;
       case (3):
-        var axiList = [...data];
-        for (var i = 0; i < data.length; i++) {
+        var axiList = [...widget.data];
+        for (var i = 0; i < widget.data.length; i++) {
           double maximo = axiList.first;
           for (int j = 1; j < axiList.length; j++) {
             if (axiList[j] > maximo) maximo = axiList[j];
@@ -44,7 +51,7 @@ class HistogramPlots extends StatelessWidget {
 
         break;
       default:
-        dataFix = data;
+        dataFix = widget.data;
     }
 
     return Padding(
@@ -58,6 +65,12 @@ class HistogramPlots extends StatelessWidget {
             minY: 0,
             maxY: maxData,
             barTouchData: BarTouchData(
+              touchCallback: (FlTouchEvent touch, BarTouchResponse? valor){
+                if( valor != null&& valor.spot!= null && valor.spot?.touchedRodData != null&& valor.spot?.touchedRodData.toY != null){
+                  widget.showRain(valor.spot!.touchedRodData.toY);
+                }
+
+            },
               touchTooltipData: BarTouchTooltipData(
                 fitInsideVertically: true,
                   tooltipBgColor: Colors.transparent,
@@ -65,6 +78,7 @@ class HistogramPlots extends StatelessWidget {
                   tooltipMargin: 2,
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
+                  widget.showRain(rod.toY);
                     return BarTooltipItem(
                         rod.toY.toString(),
                         const TextStyle(
@@ -89,13 +103,13 @@ class HistogramPlots extends StatelessWidget {
               ),
             ),
             barGroups: [
-              ...durations.asMap().entries.map((e) => BarChartGroupData(
+              ...widget.durations.asMap().entries.map((e) => BarChartGroupData(
                     x: e.value,
                     barRods: [
                       BarChartRodData(
                           toY: dataFix[e.key],
                           borderRadius: BorderRadius.zero,
-                          width: 200 / durations.length
+                          width: 200 / widget.durations.length
                       )
                     ],
 

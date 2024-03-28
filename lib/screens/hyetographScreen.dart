@@ -4,6 +4,7 @@ import 'package:hietograma/controllers/hyetographController.dart';
 import 'package:hietograma/controllers/zoneController.dart';
 import 'package:hietograma/routes/routes.dart';
 
+
 class HyetographScreen extends StatelessWidget {
   const HyetographScreen({super.key});
 
@@ -13,11 +14,11 @@ class HyetographScreen extends StatelessWidget {
       builder: (zoneController) => GetBuilder<HyetographController>(
         builder: (hyetographController) {
           return Scaffold(
-              backgroundColor: Color.fromRGBO(245, 245, 245, 1),
+              backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
               appBar: AppBar(
                 elevation: 10,
                 centerTitle: true,
-                title: Text("HIETOGRAMA"),
+                title: const Text("HIETOGRAMA"),
               ),
               floatingActionButton: Container(
                 height: 50.0,

@@ -41,6 +41,7 @@ dependencies:
   hive_flutter: ^1.1.0
   geobase: ^1.0.0
   location: ^5.0.3
+  parallax_rain: ^1.1.1
 
 dev_dependencies:
   flutter_test:
@@ -59,6 +60,7 @@ flutter:
   assets:
     - assents/seedData.json
     - assents/seedDataConLas14Regiones.json
+    - assents/seedDataConCoordenadas.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in
   # the material Icons class.

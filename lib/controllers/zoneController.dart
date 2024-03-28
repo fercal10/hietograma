@@ -9,7 +9,7 @@ import '../models/zone.dart';
 class ZoneController extends GetxController {
   late final Box<Zone> _zoneBox;
   final zones = <Zone>[];
-  final String filePath = "assents/seedDataConLas14Regiones.json";
+  final String filePath = "assents/seedDataConCoordenadas.json";
 
   @override
   Future<void> onInit() async {
@@ -17,10 +17,7 @@ class ZoneController extends GetxController {
     super.onInit();
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-  }
+
 
   Future<void> getZones() async {
     _zoneBox =  await Hive.openBox<Zone>('zones');
@@ -38,7 +35,6 @@ class ZoneController extends GetxController {
       zones.forEach((element) async {
         Zone newZone = Zone.fromJson(element);
          _zoneBox.add(newZone);
-         print(newZone);
       });
     }
   }

@@ -50,8 +50,8 @@ class Hyetograph extends HiveObject{
     List<int> durations =getDurations();
     for (int i = 0; i < durations.length; i++) {
       int periodo = periodToIndex(returnPeriod);
-      double actual = curveEquations[periodo].Calculate(durations[i]);
-      double anterior = i != 0 ? curveEquations[periodo].Calculate(durations[i - 1]) : 0;
+      double actual = curveEquations[periodo].calculate(durations[i]);
+      double anterior = i != 0 ? curveEquations[periodo].calculate(durations[i - 1]) : 0;
       double result = i != 0 ? anterior - actual : actual;
       tempList.add(result.toPrecision(2));
     }

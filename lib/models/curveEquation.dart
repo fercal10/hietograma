@@ -17,7 +17,7 @@ class CurveEquation extends HiveObject {
   CurveEquation(
       {required this.period, required this.mult, required this.power});
 
-  double Calculate(int x) {
+  double calculate(int x) {
     return (mult * (pow(x, power)));
   }
 
