@@ -1,8 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:geobase/geobase.dart';
 import 'package:get/get.dart';
 import 'package:hietograma/controllers/hyetographController.dart';
 import 'package:hietograma/controllers/zoneController.dart';
+import 'package:hietograma/widget/show_map.dart';
 import '../models/hyetograph.dart';
 import '../models/zone.dart';
 import 'package:location/location.dart';
@@ -33,7 +35,6 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
   String? sectorName;
 
   void _onSave() {
-
     if (_formKey.currentState!.validate() &&
         zonesSelect != null &&
         sectorName != null) {
@@ -63,16 +64,41 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final List<Zone> zonesOptions = zoneController.zones ;
+    final List<Zone> zonesOptions = zoneController.zones;
     if (zonesOptions.isEmpty) {
       Get.back();
       return const Scaffold();
     }
+    void selectLocation({required double lat, required double log}) {
+      if (zonesOptions.isNotEmpty) {
+        var findLocation = zonesOptions.firstWhereOrNull((e) {
+          List<Geographic> listPosition = e.coordinates
+              .map((x) => Geographic(
+                    lat: x[1],
+                    lon: x[0],
+                  ))
+              .toList();
+          GeoBox geoBox = GeoBox.from(listPosition);
+          return geoBox.intersectsPoint(Geographic(lat: lat, lon: log));
+        });
 
-
-
+        if (findLocation != null) {
+          setState(() {
+            zonesSelect = findLocation;
+          });
+        } else {
+          const snackBar = SnackBar(
+            content:
+                Text('Ubicacion selecionada no coincide con ninguna Region!'),
+          );
+          ScaffoldMessenger.of(context).showSnackBar(snackBar);
+        }
+      }
+      Get.back();
+    }
 
     return Scaffold(
+      backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
       appBar: AppBar(
         elevation: 10,
         centerTitle: true,
@@ -119,9 +145,8 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                         isExpanded: true,
                         onChanged: (Zone? newValue) {
                           if (newValue != null) {
-                              zonesSelect = newValue;
-                            setState(() {
-                            });
+                            zonesSelect = newValue;
+                            setState(() {});
                           }
                         },
                         value: zonesSelect,
@@ -135,34 +160,12 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                         flex: 1,
                         child: IconButton(
                             onPressed: () async {
-                              Location location = Location();
-
-                              bool serviceEnabled;
-                              PermissionStatus permissionGranted;
-                              LocationData locationData;
-
-                              serviceEnabled = await location.serviceEnabled();
-                              if (!serviceEnabled) {
-                                serviceEnabled =
-                                    await location.requestService();
-                                if (!serviceEnabled) {
-                                  return;
-                                }
-                              }
-
-                              permissionGranted =
-                                  await location.hasPermission();
-                              if (permissionGranted ==
-                                  PermissionStatus.denied) {
-                                permissionGranted =
-                                    await location.requestPermission();
-                                if (permissionGranted !=
-                                    PermissionStatus.granted) {
-                                  return;
-                                }
-                              }
-
-                              locationData = await location.getLocation();
+                              showModalBottomSheet(
+                                context: context,
+                                builder: (ctx) => ShowMap(
+                                    zones: zonesOptions,
+                                    selectLocation: selectLocation),
+                              );
 
                             },
                             icon: const Icon(
@@ -229,13 +232,14 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                       zonesSelect!.heightMax != -1) {
                     return "La Altura maxima de la Curva IDF es ${zonesSelect!.heightMax}";
                   }
-                  if(sectorName!= null){
-                    var validateSector =zonesSelect!.curves.firstWhere((e) =>e.name== sectorName );
+                  if (sectorName != null) {
+                    var validateSector = zonesSelect!.curves
+                        .firstWhere((e) => e.name == sectorName);
 
-                    if(int.parse(value) < validateSector.heightMin ||int.parse(value) >= validateSector.heightMax){
+                    if (int.parse(value) < validateSector.heightMin ||
+                        int.parse(value) >= validateSector.heightMax) {
                       return "La altitud no coincide con el sector";
                     }
-
                   }
                   return null;
                 },
@@ -296,22 +300,44 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
               const SizedBox(
                 height: 30,
               ),
-              ListTile(
-                title: const Text("Periodo de Retorno"),
-                trailing: DropdownButton<int>(
-                  onChanged: (int? newValue) {
-                    if (newValue != null) {
+              const Text("Periodo de Retorno",
+                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+              const SizedBox(
+                height: 10,
+              ),
+              Center(
+                child: SegmentedButton<int>(
+
+                    style: ButtonStyle(
+                        backgroundColor: MaterialStateProperty.resolveWith((s) {
+                      const Set<MaterialState> interactiveStates =
+                          <MaterialState>{
+                        MaterialState.pressed,
+                        MaterialState.hovered,
+                        MaterialState.focused,
+                        MaterialState.selected
+                      };
+                      if (s.any(interactiveStates.contains)) {
+                        return Colors.blue[600];
+                      }
+                      return Colors.grey[200];
+                    })
+
+                        // foregroundColor: Colors.blue,
+
+                        ),
+                    segments: returnPeriodOptions
+                        .map((e) => ButtonSegment<int>(
+                              value: e,
+                              label: Text("${e.toString()}\n años",textAlign: TextAlign.center),
+                            ))
+                        .toList(),
+                    selected: <int>{returnPeriodSelect},
+                    onSelectionChanged: (Set<int> newSelection) {
                       setState(() {
-                        returnPeriodSelect = newValue;
+                        returnPeriodSelect = newSelection.first;
                       });
-                    }
-                  },
-                  value: returnPeriodSelect,
-                  items: returnPeriodOptions
-                      .map((e) => DropdownMenuItem<int>(
-                          value: e, child: Text("${e.toString()} años")))
-                      .toList(),
-                ),
+                    }),
               ),
               const SizedBox(
                 height: 40,

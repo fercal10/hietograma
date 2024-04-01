@@ -7,11 +7,11 @@ class HistogramPlots extends StatefulWidget {
 
   final List<int> durations;
   final int type;
-  final void Function(double n) showRain;
+  final void Function(double n)? showRain;
 
   const HistogramPlots(
       {super.key,
-      required this.showRain,
+       this.showRain,
       required this.data,
       required this.durations,
       required this.type});
@@ -67,7 +67,7 @@ class _HistogramPlotsState extends State<HistogramPlots> {
             barTouchData: BarTouchData(
               touchCallback: (FlTouchEvent touch, BarTouchResponse? valor){
                 if( valor != null&& valor.spot!= null && valor.spot?.touchedRodData != null&& valor.spot?.touchedRodData.toY != null){
-                  widget.showRain(valor.spot!.touchedRodData.toY);
+                  widget.showRain!(valor.spot!.touchedRodData.toY);
                 }
 
             },
@@ -78,7 +78,6 @@ class _HistogramPlotsState extends State<HistogramPlots> {
                   tooltipMargin: 2,
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
-                  widget.showRain(rod.toY);
                     return BarTooltipItem(
                         rod.toY.toString(),
                         const TextStyle(
