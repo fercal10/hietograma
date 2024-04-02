@@ -7,8 +7,7 @@ import 'package:location/location.dart';
 
 class ShowMap extends StatefulWidget {
   final List<Zone> zones;
-  final  Function({required double log, required double lat})
-      selectLocation;
+  final Function({required double log, required double lat}) selectLocation;
 
   const ShowMap({super.key, required this.zones, required this.selectLocation});
 
@@ -40,7 +39,9 @@ class _ShowMapState extends State<ShowMap> {
     }
     permissionGranted = await location.hasPermission();
 
-    if (serviceEnabled && permissionGranted != PermissionStatus.denied && permissionGranted != PermissionStatus.deniedForever) {
+    if (serviceEnabled &&
+        permissionGranted != PermissionStatus.denied &&
+        permissionGranted != PermissionStatus.deniedForever) {
       locationData = await location.getLocation();
       var latitude = locationData.latitude;
       var longitude = locationData.longitude;
@@ -116,7 +117,7 @@ class _ShowMapState extends State<ShowMap> {
               padding: const EdgeInsets.all(10),
               width: MediaQuery.of(context).size.width,
               color: const Color.fromRGBO(245, 245, 245, 0.8),
-              child: const Text("Seleciona la ubicacion ",
+              child: const Text("Seleciona la Ubicación ",
                   style: TextStyle(fontSize: 20)),
             ),
           ),

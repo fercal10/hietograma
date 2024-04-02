@@ -89,7 +89,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
         } else {
           const snackBar = SnackBar(
             content:
-                Text('Ubicacion selecionada no coincide con ninguna Region!'),
+                Text('Ubicación seleccionada no coincide con ninguna Región!'),
           );
           ScaffoldMessenger.of(context).showSnackBar(snackBar);
         }
@@ -133,7 +133,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
               const SizedBox(
                 height: 30,
               ),
-              const Text("Regiones",
+              const Text("Regiónes",
                   style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
               Padding(
                 padding: const EdgeInsets.fromLTRB(40, 0, 10, 0),
@@ -166,7 +166,6 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                                     zones: zonesOptions,
                                     selectLocation: selectLocation),
                               );
-
                             },
                             icon: const Icon(
                               Icons.location_searching,
@@ -230,7 +229,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                     return "La Altura minima de la Curva IDF es ${zonesSelect!.heightMin}";
                   } else if (int.parse(value) >= zonesSelect!.heightMax &&
                       zonesSelect!.heightMax != -1) {
-                    return "La Altura maxima de la Curva IDF es ${zonesSelect!.heightMax}";
+                    return "La Altura máxima de la Curva IDF es ${zonesSelect!.heightMax}";
                   }
                   if (sectorName != null) {
                     var validateSector = zonesSelect!.curves
@@ -251,6 +250,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                 keyboardType: TextInputType.number,
                 controller: baseTimeController,
                 decoration: const InputDecoration(
+                  errorMaxLines: 3,
                   suffixText: "minutos",
                   hoverColor: Colors.blue,
                   border: OutlineInputBorder(gapPadding: 6),
@@ -266,9 +266,17 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                     return " Tiempo Base requerido ";
                   }
                   if (totalRainDurationController.text.isNotEmpty &&
-                      int.parse(value) / 2 >
-                          int.parse(totalRainDurationController.text)) {
-                    return " Tiempo Base Deber ser menor que el tiempo total de lluvia  ";
+                      int.parse(value) >
+                          int.parse(totalRainDurationController.text) / 2) {
+                    return " Tiempo Base debe ser menor que el tiempo total de lluvia  ";
+                  }
+                  if ((int.parse(totalRainDurationController.text) %
+                          int.parse(value)) !=
+                      0) {
+                    return "Tiempo Base debe ser una divisible entre la duración de la lluvia ";
+                  }
+                  if (int.parse(value) > 0) {
+                    return "Valor debe ser mayor o igual a 1";
                   }
                   return null;
                 },
@@ -307,7 +315,6 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
               ),
               Center(
                 child: SegmentedButton<int>(
-
                     style: ButtonStyle(
                         backgroundColor: MaterialStateProperty.resolveWith((s) {
                       const Set<MaterialState> interactiveStates =
@@ -329,7 +336,8 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                     segments: returnPeriodOptions
                         .map((e) => ButtonSegment<int>(
                               value: e,
-                              label: Text("${e.toString()}\n años",textAlign: TextAlign.center),
+                              label: Text("${e.toString()}\n años",
+                                  textAlign: TextAlign.center),
                             ))
                         .toList(),
                     selected: <int>{returnPeriodSelect},

@@ -7,8 +7,8 @@ import 'package:printing/printing.dart';
 import '../models/hyetograph.dart';
 
 
-Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph ) async {
-  List<double> dataTable = hyetograph.getData();
+Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph, Units unit ) async {
+  List<double> dataTable = hyetograph.getData(unit);
   var duration = hyetograph.getDurations();
   var tableHeaders = <dynamic>["Periodo de Retorno", ...duration.map((e) => "$e min")];
 
@@ -51,11 +51,11 @@ Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph 
   // Top bar chart
   pw.Chart generateChart( List<double> datos ) => pw.Chart(
     left: pw.Container(
-      alignment: pw.Alignment.topCenter,
+      alignment: pw.Alignment.centerRight,
       margin: const pw.EdgeInsets.only(right: 5, top: 10),
       child: pw.Transform.rotateBox(
         angle: pi / 2,
-        child: pw.Text('Agua'),
+        child: pw.Text('Intensidad'),
       ),
     ),
 
@@ -70,7 +70,7 @@ Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph 
       ),
       yAxis: pw.FixedAxis(
         listInY,
-        format: (v) => '$v mm',
+        format: (v) => '$v ${unit.name}',
         textStyle: const pw.TextStyle( fontSize: 10),
         divisions: true,
       ),
@@ -137,7 +137,7 @@ Future<Uint8List> generateReport(PdfPageFormat pageFormat,Hyetograph hyetograph 
             pw.Text('Hietograma de ${hyetograph.zone.name} ',
                 style: const pw.TextStyle(
                   color: baseColor,
-                  fontSize: 30,
+                  fontSize: 25,
                 )),
             pw.SizedBox(height: 10),
             table,

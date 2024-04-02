@@ -20,7 +20,7 @@ class HyetographScreen extends StatelessWidget {
                 centerTitle: true,
                 title: const Text("HIETOGRAMA"),
               ),
-              floatingActionButton: Container(
+              floatingActionButton: SizedBox(
                 height: 50.0,
                 width: 130.0,
                 child: FloatingActionButton(
@@ -40,7 +40,7 @@ class HyetographScreen extends StatelessWidget {
                     var hyetograph = hyetographController.hyetographs[index];
                     return ListTile(
                       onTap: () => Get.toNamed(
-                          RouterHelper.getHyetographDeatils(id: hyetograph.id)),
+                          RouterHelper.getHyetographDetails(id: hyetograph.id)),
                       subtitle: Text(
                           "Zona ${hyetograph.zone.name}/ ${hyetograph.altitude.toString()} metros "),
                       title: Text(hyetograph.name),

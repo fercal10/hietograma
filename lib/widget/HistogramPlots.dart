@@ -1,7 +1,6 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
 
-
 class HistogramPlots extends StatefulWidget {
   final List<double> data;
 
@@ -11,7 +10,7 @@ class HistogramPlots extends StatefulWidget {
 
   const HistogramPlots(
       {super.key,
-       this.showRain,
+      this.showRain,
       required this.data,
       required this.durations,
       required this.type});
@@ -23,7 +22,7 @@ class HistogramPlots extends StatefulWidget {
 class _HistogramPlotsState extends State<HistogramPlots> {
   @override
   Widget build(BuildContext context) {
-    double maxData = widget.data.reduce((a, b) => a > b ? a : b) * 1.2;
+    double maxData = widget.data.reduce((a, b) => a > b ? a : b);
 
     List<double> dataFix = [];
     switch (widget.type) {
@@ -54,6 +53,36 @@ class _HistogramPlotsState extends State<HistogramPlots> {
         dataFix = widget.data;
     }
 
+    Widget leftTitles(double value, TitleMeta meta) {
+      const style = TextStyle(
+        color: Color(0xff7589a2),
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      );
+      String text = value.toInt().toString();
+
+      return SideTitleWidget(
+        axisSide: meta.axisSide,
+        space: 5,
+        child: Text(text, style: style),
+      );
+    }
+
+    Widget bottomTitles(double value, TitleMeta meta) {
+      const style = TextStyle(
+        color: Color(0xff7589a2),
+        fontWeight: FontWeight.bold,
+        fontSize: 14,
+      );
+      String text = value.toInt().toString();
+
+      return SideTitleWidget(
+        axisSide: meta.axisSide,
+        space: 5,
+        child: Text(text, style: style),
+      );
+    }
+
     return Padding(
       padding: const EdgeInsets.all(10),
       child: AspectRatio(
@@ -63,16 +92,18 @@ class _HistogramPlotsState extends State<HistogramPlots> {
           swapAnimationDuration: const Duration(seconds: 5),
           BarChartData(
             minY: 0,
-            maxY: maxData,
+            maxY: maxData * 1.2,
             barTouchData: BarTouchData(
-              touchCallback: (FlTouchEvent touch, BarTouchResponse? valor){
-                if( valor != null&& valor.spot!= null && valor.spot?.touchedRodData != null&& valor.spot?.touchedRodData.toY != null){
+              touchCallback: (FlTouchEvent touch, BarTouchResponse? valor) {
+                if (valor != null &&
+                    valor.spot != null &&
+                    valor.spot?.touchedRodData != null &&
+                    valor.spot?.touchedRodData.toY != null) {
                   widget.showRain!(valor.spot!.touchedRodData.toY);
                 }
-
-            },
+              },
               touchTooltipData: BarTouchTooltipData(
-                fitInsideVertically: true,
+                  fitInsideVertically: true,
                   tooltipBgColor: Colors.transparent,
                   tooltipPadding: EdgeInsets.zero,
                   tooltipMargin: 2,
@@ -96,9 +127,25 @@ class _HistogramPlotsState extends State<HistogramPlots> {
                     bottom: BorderSide(),
                     right: BorderSide.none,
                     top: BorderSide.none)),
-            titlesData: const FlTitlesData(
-              topTitles: AxisTitles(
+            titlesData: FlTitlesData(
+              rightTitles: const AxisTitles(
+                // sideTitles: SideTitles(showTitles: false),
+                axisNameWidget: Text("Intensidad (Min)"),
+              ),
+              leftTitles: AxisTitles(
+                sideTitles: SideTitles(
+                  showTitles: true,
+                  reservedSize: 40,
+                  interval: maxData / 4,
+                  getTitlesWidget: leftTitles,
+                ),
+              ),
+              topTitles: const AxisTitles(
                 axisNameWidget: Text("Tiempo (Min)"),
+              ),
+              bottomTitles: AxisTitles(
+                sideTitles:
+                    SideTitles(showTitles: widget.durations.length < 16),
               ),
             ),
             barGroups: [
@@ -108,10 +155,8 @@ class _HistogramPlotsState extends State<HistogramPlots> {
                       BarChartRodData(
                           toY: dataFix[e.key],
                           borderRadius: BorderRadius.zero,
-                          width: 200 / widget.durations.length
-                      )
+                          width: 200 / widget.durations.length)
                     ],
-
                   )),
             ],
           ),

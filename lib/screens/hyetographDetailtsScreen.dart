@@ -23,10 +23,12 @@ class HyetographDetailsScreen extends StatefulWidget {
 
 class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
   int theRain = 0;
+  Units useUnit = Units.mm;
 
   void showRain(double n) {
-    var timer =
-        Timer(const Duration(seconds: 3), () => setState(() => theRain = 0));
+    var timer = Timer(const Duration(seconds: 3), () {
+      setState(() => theRain = 0);
+    });
     if (theRain != 0) {
       timer.cancel();
     }
@@ -39,8 +41,8 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
   Widget build(BuildContext context) {
     final HyetographController hyetographController =
         Get.find<HyetographController>();
-
     Hyetograph? hyetograph = hyetographController.getHyetographById(widget.id);
+    ScrollController scrollController = ScrollController();
 
     if (hyetograph == null) {
       Get.back();
@@ -48,14 +50,17 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
     }
     //Iniciarlizar Datos
     List<int> durations = hyetograph.getDurations();
-    List<double> data = hyetograph.getData();
+
+    List<double> data = hyetograph.getData(useUnit);
+
     final indexSector = hyetograph.getIndexSector();
 
     List<DataRow> tableRows = <DataRow>[
       DataRow(
         cells: [
           DataCell(Text("${hyetograph.returnPeriod.toString()} Años")),
-          ...data.map((e) => DataCell(Text(e.toStringAsFixed(2))))
+          ...data
+              .map((e) => DataCell(Center(child: Text(e.toStringAsFixed(2)))))
         ],
       )
     ];
@@ -65,6 +70,18 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
       ...durations
           .map((e) => DataColumn(label: Text("${e.toString()} Minutos ")))
     ];
+
+    List<DropdownMenuItem<Units>> menuUnits = Units.values
+        .asMap()
+        .entries
+        .map((e) => DropdownMenuItem<Units>(
+              value: e.value,
+              child: Text(
+                e.value.name.toUpperCase(),
+                style: const TextStyle(fontSize: 20),
+              ),
+            ))
+        .toList();
 
     return Scaffold(
         backgroundColor: const Color.fromRGBO(245, 245, 245, 1),
@@ -77,8 +94,19 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
           actions: [
             IconButton(
               onPressed: () async {
-                final Uint8List pdfShare =
-                    await generateReport(PdfPageFormat.letter, hyetograph);
+                await hyetographController.deleteById(hyetograph.id);
+                Get.back();
+              },
+              icon: const Icon(
+                Icons.delete,
+                color: Colors.red,
+                size: 30,
+              ),
+            ),
+            IconButton(
+              onPressed: () async {
+                final Uint8List pdfShare = await generateReport(
+                    PdfPageFormat.letter, hyetograph, useUnit);
                 await Printing.sharePdf(bytes: pdfShare, filename: "Test.pdf");
               },
               icon: const Icon(
@@ -95,7 +123,7 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
             Stack(
               fit: StackFit.loose,
               children: [
-                Container(
+                SizedBox(
                   width: MediaQuery.of(context).size.width,
                   height: MediaQuery.of(context).size.height * 1.2,
                   child: theRain == 0
@@ -123,21 +151,67 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
                             "${hyetograph.zone.name.toString()}- ${hyetograph.zone.curves[indexSector].name} "),
                     ItemDetails(
                         dato: "Tiempo base",
-                        info: hyetograph.baseTime.toString()),
-                    const SizedBox(height: 25),
-                    SingleChildScrollView(
-                      scrollDirection: Axis.horizontal,
-                      child: Padding(
-                        padding: const EdgeInsets.all(5),
-                        child: Stack(children: [
-                          DataTable(
-                            columnSpacing: 20,
-                            horizontalMargin: 10,
-                            border: TableBorder.all(),
-                            columns: tableColumns,
-                            rows: tableRows,
+                        info: "${hyetograph.baseTime} Años"),
+                    Container(
+                      decoration: const BoxDecoration(
+                        border: Border(
+                          bottom: BorderSide(width: 1),
+                        ),
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        children: [
+                          const Text(
+                            "Unidad de Medida",
+                            style: TextStyle(
+                              fontSize: 18,
+                              overflow: TextOverflow.clip,
+                            ),
                           ),
-                        ]),
+                          const SizedBox(
+                            width: 20,
+                          ),
+                          DropdownButton(
+                            elevation: 50,
+                            value: useUnit,
+                            items: menuUnits,
+                            onChanged: (value) {
+                              if (value is Units) {
+                                setState(() {
+                                  useUnit = value;
+                                  data = hyetograph.getData(useUnit);
+                                });
+                              }
+                            },
+                          )
+                        ],
+                      ),
+                    ),
+                    const SizedBox(height: 25),
+                    SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: Scrollbar(
+                        controller: scrollController,
+                        thumbVisibility: true,
+                        trackVisibility: true,
+                        interactive: true,
+                        radius: const Radius.circular(20),
+                        thickness: 15,
+                        child: Padding(
+                          padding: const EdgeInsets.only(bottom: 25.0),
+                          child: SingleChildScrollView(
+                            controller: scrollController,
+                            scrollDirection: Axis.horizontal,
+                            child: DataTable(
+                              columnSpacing: 20,
+                              horizontalMargin: 10,
+                              border: TableBorder.all(),
+                              columns: tableColumns,
+                              rows: tableRows,
+                            ),
+                          ),
+                        ),
                       ),
                     ),
                     const SizedBox(height: 25),
@@ -188,13 +262,12 @@ class ItemDetails extends StatelessWidget {
           bottom: BorderSide(width: 1),
         ),
       ),
-      width: width * 0.8,
-      margin: const EdgeInsets.only(right: 10, left: 10),
+      width: width,
       padding: const EdgeInsets.all(10),
       child: Wrap(
         children: [
           Text(
-            "$dato: $info ",
+            "$dato: $info",
             style: const TextStyle(
               fontSize: 18,
               overflow: TextOverflow.clip,

@@ -60,8 +60,6 @@ dev_dependencies:
 # The following section is specific to Flutter packages.
 flutter:
   assets:
-    - assents/seedData.json
-    - assents/seedDataConLas14Regiones.json
     - assents/seedDataConCoordenadas.json
   # The following line ensures that the Material Icons font is
   # included with your application, so that you can use the icons in

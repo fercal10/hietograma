@@ -12,7 +12,7 @@ class RouterHelper {
 
   static String getAddHyetograph() => _addHyetograph;
 
-  static String getHyetographDeatils({int? id}) =>
+  static String getHyetographDetails({int? id}) =>
       "$_hyetographDeatils?id=$id";
 
   static final route = [
