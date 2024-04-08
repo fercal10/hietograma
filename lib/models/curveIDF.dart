@@ -1,4 +1,4 @@
-import 'package:hietograma/models/curveEquation.dart';
+import 'package:Hietograma/models/curveEquation.dart';
 import 'package:hive/hive.dart';
 
 part 'curveIDF.g.dart';

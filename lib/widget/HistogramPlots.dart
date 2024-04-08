@@ -1,19 +1,23 @@
 import 'package:fl_chart/fl_chart.dart';
 import 'package:flutter/material.dart';
+import 'package:Hietograma/models/hyetograph.dart';
 
 class HistogramPlots extends StatefulWidget {
   final List<double> data;
 
   final List<int> durations;
   final int type;
+  final Units unit;
   final void Function(double n)? showRain;
 
-  const HistogramPlots(
-      {super.key,
-      this.showRain,
-      required this.data,
-      required this.durations,
-      required this.type});
+  const HistogramPlots({
+    super.key,
+    this.showRain,
+    required this.data,
+    required this.durations,
+    required this.type,
+    required this.unit,
+  });
 
   @override
   State<HistogramPlots> createState() => _HistogramPlotsState();
@@ -99,14 +103,16 @@ class _HistogramPlotsState extends State<HistogramPlots> {
                     valor.spot != null &&
                     valor.spot?.touchedRodData != null &&
                     valor.spot?.touchedRodData.toY != null) {
-                  widget.showRain!(valor.spot!.touchedRodData.toY);
+                  widget.showRain!(widget.unit == Units.mm
+                      ? valor.spot!.touchedRodData.toY
+                      : valor.spot!.touchedRodData.toY * 0.38);
                 }
               },
               touchTooltipData: BarTouchTooltipData(
                   fitInsideVertically: true,
-                  tooltipBgColor: Colors.transparent,
+                  getTooltipColor: (group) => Colors.transparent,
                   tooltipPadding: EdgeInsets.zero,
-                  tooltipMargin: 2,
+                  tooltipMargin: 5,
                   getTooltipItem: (BarChartGroupData group, int groupIndex,
                       BarChartRodData rod, int rodIndex) {
                     return BarTooltipItem(
@@ -128,14 +134,15 @@ class _HistogramPlotsState extends State<HistogramPlots> {
                     right: BorderSide.none,
                     top: BorderSide.none)),
             titlesData: FlTitlesData(
-              rightTitles: const AxisTitles(
+              rightTitles: AxisTitles(
                 // sideTitles: SideTitles(showTitles: false),
-                axisNameWidget: Text("Intensidad (Min)"),
+                axisNameWidget:
+                    Text("Intensidad (${(widget.unit.name).toUpperCase()})"),
               ),
               leftTitles: AxisTitles(
                 sideTitles: SideTitles(
                   showTitles: true,
-                  reservedSize: 40,
+                  reservedSize: 60,
                   interval: maxData / 4,
                   getTitlesWidget: leftTitles,
                 ),

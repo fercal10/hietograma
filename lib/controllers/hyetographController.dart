@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:hietograma/models/hyetograph.dart';
+import 'package:Hietograma/models/hyetograph.dart';
 import 'package:hive/hive.dart';
 
 class HyetographController extends GetxController {

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:get/get.dart';
-import 'package:hietograma/models/zone.dart';
+import 'package:Hietograma/models/zone.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:location/location.dart';
 
@@ -56,7 +56,7 @@ class _ShowMapState extends State<ShowMap> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
+    return SizedBox(
       height: 500,
       child: Stack(
         children: [
@@ -64,7 +64,7 @@ class _ShowMapState extends State<ShowMap> {
             height: 500,
             child: FlutterMap(
               options: MapOptions(
-                initialCenter: LatLng(7.828986, -66.157976),
+                initialCenter: const LatLng(7.828986, -66.157976),
                 initialZoom: 6.2,
                 onTap: (tapPosition, point) {
                   setState(() {
@@ -96,7 +96,7 @@ class _ShowMapState extends State<ShowMap> {
                   polygons: [
                     ...widget.zones.asMap().entries.map((e) {
                       return Polygon(
-                        labelStyle: TextStyle(color: Colors.black),
+                        labelStyle: const TextStyle(color: Colors.black),
                         points: e.value.coordinates
                             .map((a) => LatLng(a[1], a[0]))
                             .toList(),

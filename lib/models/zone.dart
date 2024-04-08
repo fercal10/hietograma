@@ -1,4 +1,4 @@
-import 'package:hietograma/models/curveIDF.dart';
+import 'package:Hietograma/models/curveIDF.dart';
 import 'package:hive/hive.dart';
 
 part 'zone.g.dart';

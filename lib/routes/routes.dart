@@ -1,7 +1,7 @@
 import 'package:get/get.dart';
-import 'package:hietograma/screens/addHyetographScreen.dart';
-import 'package:hietograma/screens/hyetographDetailtsScreen.dart';
-import 'package:hietograma/screens/hyetographScreen.dart';
+import 'package:Hietograma/screens/addHyetographScreen.dart';
+import 'package:Hietograma/screens/hyetographDetailtsScreen.dart';
+import 'package:Hietograma/screens/hyetographScreen.dart';
 
 class RouterHelper {
   static const String _initial = "/";
@@ -12,8 +12,7 @@ class RouterHelper {
 
   static String getAddHyetograph() => _addHyetograph;
 
-  static String getHyetographDetails({int? id}) =>
-      "$_hyetographDeatils?id=$id";
+  static String getHyetographDetails({int? id}) => "$_hyetographDeatils?id=$id";
 
   static final route = [
     GetPage(name: _initial, page: () => const HyetographScreen()),
@@ -22,7 +21,9 @@ class RouterHelper {
         name: _hyetographDeatils,
         page: () {
           final id = int.parse(Get.parameters['id']!);
-          return HyetographDetailsScreen( id: id,);
+          return HyetographDetailsScreen(
+            id: id,
+          );
         }),
   ];
 }

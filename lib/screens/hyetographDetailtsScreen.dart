@@ -1,8 +1,9 @@
 import 'dart:async';
 import 'dart:typed_data';
+import 'package:Hietograma/widget/HistogramPlots.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hietograma/widget/HistogramPlots.dart';
+
 import 'package:parallax_rain/parallax_rain.dart';
 import 'package:pdf/pdf.dart';
 import 'package:printing/printing.dart';
@@ -219,6 +220,7 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
                         " Hietograma con periodo de retorno  ${hyetograph.returnPeriod} años"),
                     const SizedBox(height: 5),
                     HistogramPlots(
+                      unit: useUnit,
                       showRain: showRain,
                       type: 1,
                       data: data,
@@ -226,6 +228,7 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
                     ),
                     const SizedBox(height: 15),
                     HistogramPlots(
+                      unit: useUnit,
                       showRain: showRain,
                       type: 2,
                       data: data,
@@ -233,6 +236,7 @@ class _HyetographDetailsScreenState extends State<HyetographDetailsScreen> {
                     ),
                     const SizedBox(height: 15),
                     HistogramPlots(
+                      unit: useUnit,
                       showRain: showRain,
                       type: 3,
                       data: data,

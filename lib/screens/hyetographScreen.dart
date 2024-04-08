@@ -1,9 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hietograma/controllers/hyetographController.dart';
-import 'package:hietograma/controllers/zoneController.dart';
-import 'package:hietograma/routes/routes.dart';
-
+import 'package:Hietograma/controllers/hyetographController.dart';
+import 'package:Hietograma/controllers/zoneController.dart';
+import 'package:Hietograma/routes/routes.dart';
 
 class HyetographScreen extends StatelessWidget {
   const HyetographScreen({super.key});

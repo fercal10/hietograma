@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:hietograma/controllers/zoneController.dart';
+import 'package:Hietograma/controllers/zoneController.dart';
 
 import 'package:hive_flutter/adapters.dart';
 
@@ -9,8 +9,7 @@ import '../models/curveIDF.dart';
 import '../models/hyetograph.dart';
 import '../models/zone.dart';
 
-
-Future<void> init()async{
+Future<void> init() async {
   await Hive.initFlutter();
 
   Hive.registerAdapter(CurveEquationAdapter());
@@ -18,8 +17,6 @@ Future<void> init()async{
   Hive.registerAdapter(ZoneAdapter());
   Hive.registerAdapter(HyetographAdapter());
 
-  Get.lazyPut(()=>ZoneController());
-  Get.lazyPut(()=>HyetographController());
-
-
+  Get.lazyPut(() => ZoneController());
+  Get.lazyPut(() => HyetographController());
 }

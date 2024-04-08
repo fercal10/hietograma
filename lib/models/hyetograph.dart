@@ -1,5 +1,5 @@
 import 'package:get/get.dart';
-import 'package:hietograma/models/zone.dart';
+import 'package:Hietograma/models/zone.dart';
 import 'package:hive/hive.dart';
 
 import '../util/sharedFunctions.dart';
@@ -69,7 +69,9 @@ class Hyetograph extends HiveObject {
       double result = i != 0 ? anterior - actual : actual;
       tempList.add(result.toPrecision(2));
     }
-    return unit == Units.mm ? tempList : tempList.map((e) => e / 0.36).toList();
+    return unit == Units.mm
+        ? tempList
+        : tempList.map((e) => (e / 0.36).toPrecision(2)).toList();
   }
 
   List<int> getDurations() {

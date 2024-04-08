@@ -2,12 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:geobase/geobase.dart';
 import 'package:get/get.dart';
-import 'package:hietograma/controllers/hyetographController.dart';
-import 'package:hietograma/controllers/zoneController.dart';
-import 'package:hietograma/widget/show_map.dart';
+import 'package:Hietograma/controllers/hyetographController.dart';
+import 'package:Hietograma/controllers/zoneController.dart';
+import 'package:Hietograma/widget/show_map.dart';
 import '../models/hyetograph.dart';
 import '../models/zone.dart';
-import 'package:location/location.dart';
 
 class AddHyetographScreen extends StatefulWidget {
   const AddHyetographScreen({super.key});
@@ -275,7 +274,7 @@ class _AddHyetographScreenState extends State<AddHyetographScreen> {
                       0) {
                     return "Tiempo Base debe ser una divisible entre la duración de la lluvia ";
                   }
-                  if (int.parse(value) > 0) {
+                  if (int.parse(value) <= 0) {
                     return "Valor debe ser mayor o igual a 1";
                   }
                   return null;

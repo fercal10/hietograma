@@ -1,12 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:get/get.dart';
-import 'package:hietograma/routes/routes.dart';
-import 'package:hietograma/screens/hyetographScreen.dart';
-import 'package:hietograma/util/dependencies.dart';
+import 'package:Hietograma/routes/routes.dart';
+import 'package:Hietograma/screens/hyetographScreen.dart';
+import 'package:Hietograma/util/dependencies.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-   await init();
+  await init();
   runApp(const MyApp());
 }
 
@@ -16,11 +17,16 @@ class MyApp extends StatelessWidget {
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+      DeviceOrientation.portraitDown,
+    ]);
     return GetMaterialApp(
       title: 'Flutter Demo',
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
+        primaryColor: Colors.blue[900],
         useMaterial3: true,
       ),
       home: const HyetographScreen(),
